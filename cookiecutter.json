@@ -1,6 +1,6 @@
 {
-    "github_repository_name": "my-serverless-service",
-    "app_name": "service",
+    "repo_name": "my-serverless-service",
+    "service_name": "service",
     "email": "dummy@dummy.com",
     "author": "Dr. Myfull Name",
     "description": "My serverless service description",
