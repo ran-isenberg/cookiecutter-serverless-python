@@ -4,5 +4,8 @@
     "email": "dummy@dummy.com",
     "author": "Dr. Myfull Name",
     "description": "My serverless service description",
-    "github_username": "The owner of the repository. Either your github username or organization name."
+    "_copy_without_render": [
+        "*.html",
+        ".github"
+    ]
 }
