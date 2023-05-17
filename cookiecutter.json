@@ -1,11 +1,8 @@
 {
-    "github_repository_name": "default-serverless-python",
-    "app_name": "default",
+    "github_repository_name": "my-serverless-service",
+    "app_name": "service",
     "email": "dummy@dummy.com",
     "author": "Dr. Myfull Name",
-    "description": "My default serverless service description",
-    "github_username": "The owner of the repository. Either your github username or organization name.",
-    "project_team": [
-        "Great Team"
-    ]
+    "description": "My serverless service description",
+    "github_username": "The owner of the repository. Either your github username or organization name."
 }
