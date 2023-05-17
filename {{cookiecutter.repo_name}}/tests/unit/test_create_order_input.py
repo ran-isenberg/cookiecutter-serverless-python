@@ -1,7 +1,7 @@
 import pytest
 from aws_lambda_powertools.utilities.parser import ValidationError
 
-from service.handlers.schemas.input import Input
+from {{cookiecutter.service_name}}.handlers.schemas.input import Input
 
 
 def test_invalid_name():

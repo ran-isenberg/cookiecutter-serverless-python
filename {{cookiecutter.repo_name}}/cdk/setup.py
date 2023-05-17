@@ -6,17 +6,17 @@ from setuptools import find_packages, setup
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name='service-cdk',
+    name='{{cookiecutter.service_name}}-cdk',
     version='3.1',
-    description='CDK code for deploying an AWS Lambda handler that implements the best practices described at https://www.ranthebuilder.cloud',
+    description='CDK code for deploying the serverless sevice',
     classifiers=[
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
         'Programming Language :: Python :: 3.10',
     ],
     url='https://github.com/ran-isenberg/aws-lambda-handler-cookbook',
-    author='Ran Isenberg',
-    author_email='ran.isenberg@ranthebuilder.cloud',
+    author='{{cookiecutter.author}}',
+    author_email='{{cookiecutter.email}}',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     package_data={'': ['*.json']},
     include_package_data=True,

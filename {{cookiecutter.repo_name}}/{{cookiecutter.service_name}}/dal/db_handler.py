@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from service.dal.schemas.db import OrderEntry
+from {{cookiecutter.service_name}}.dal.schemas.db import OrderEntry
 
 
 class DalHandler(ABC):

@@ -2,7 +2,7 @@ from aws_cdk import CfnOutput, RemovalPolicy
 from aws_cdk import aws_dynamodb as dynamodb
 from constructs import Construct
 
-import cdk.my_service.constants as constants
+import cdk.{{cookiecutter.service_name}}.constants as constants
 
 
 class ApiDbConstruct(Construct):

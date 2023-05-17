@@ -1,10 +1,10 @@
-from service.dal.db_handler import DalHandler
-from service.dal.dynamo_dal_handler import get_dal_handler
-from service.dal.schemas.db import OrderEntry
-from service.handlers.schemas.dynamic_configuration import FeatureFlagsNames
-from service.handlers.utils.dynamic_configuration import get_dynamic_configuration_store
-from service.handlers.utils.observability import logger, tracer
-from service.schemas.output import CreateOrderOutput
+from {{cookiecutter.service_name}}.dal.db_handler import DalHandler
+from {{cookiecutter.service_name}}.dal.dynamo_dal_handler import get_dal_handler
+from {{cookiecutter.service_name}}.dal.schemas.db import OrderEntry
+from {{cookiecutter.service_name}}.handlers.schemas.dynamic_configuration import FeatureFlagsNames
+from {{cookiecutter.service_name}}.handlers.utils.dynamic_configuration import get_dynamic_configuration_store
+from {{cookiecutter.service_name}}.handlers.utils.observability import logger, tracer
+from {{cookiecutter.service_name}}.schemas.output import CreateOrderOutput
 
 
 @tracer.capture_method(capture_response=False)

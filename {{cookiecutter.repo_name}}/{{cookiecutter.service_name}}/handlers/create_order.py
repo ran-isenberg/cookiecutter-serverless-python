@@ -7,16 +7,16 @@ from aws_lambda_powertools.utilities.parser import ValidationError, parse
 from aws_lambda_powertools.utilities.parser.envelopes import ApiGatewayEnvelope
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from service.handlers.schemas.dynamic_configuration import MyConfiguration
-from service.handlers.schemas.env_vars import MyHandlerEnvVars
-from service.handlers.schemas.input import Input
-from service.handlers.utils.dynamic_configuration import parse_configuration
-from service.handlers.utils.env_vars_parser import get_environment_variables, init_environment_variables
-from service.handlers.utils.http_responses import build_response
-from service.handlers.utils.observability import logger, metrics, tracer
-from service.logic.handle_create_request import handle_create_request
-from service.schemas.exceptions import InternalServerException
-from service.schemas.output import CreateOrderOutput
+from {{cookiecutter.service_name}}.handlers.schemas.dynamic_configuration import MyConfiguration
+from {{cookiecutter.service_name}}.handlers.schemas.env_vars import MyHandlerEnvVars
+from {{cookiecutter.service_name}}.handlers.schemas.input import Input
+from {{cookiecutter.service_name}}.handlers.utils.dynamic_configuration import parse_configuration
+from {{cookiecutter.service_name}}.handlers.utils.env_vars_parser import get_environment_variables, init_environment_variables
+from {{cookiecutter.service_name}}.handlers.utils.http_responses import build_response
+from {{cookiecutter.service_name}}.handlers.utils.observability import logger, metrics, tracer
+from {{cookiecutter.service_name}}.logic.handle_create_request import handle_create_request
+from {{cookiecutter.service_name}}.schemas.exceptions import InternalServerException
+from {{cookiecutter.service_name}}.schemas.output import CreateOrderOutput
 
 
 @init_environment_variables(model=MyHandlerEnvVars)

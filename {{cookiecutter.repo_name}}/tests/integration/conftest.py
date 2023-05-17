@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from cdk.my_service.constants import CONFIGURATION_NAME, ENVIRONMENT, POWER_TOOLS_LOG_LEVEL, POWERTOOLS_SERVICE_NAME, SERVICE_NAME, TABLE_NAME_OUTPUT
+from cdk.{{cookiecutter.service_name}}.constants import CONFIGURATION_NAME, ENVIRONMENT, POWER_TOOLS_LOG_LEVEL, POWERTOOLS_SERVICE_NAME, SERVICE_NAME, TABLE_NAME_OUTPUT
 from tests.utils import get_stack_output
 
 

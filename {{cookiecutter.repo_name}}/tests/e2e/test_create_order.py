@@ -4,8 +4,8 @@ from http import HTTPStatus
 import pytest
 import requests
 
-from cdk.my_service.constants import APIGATEWAY, GW_RESOURCE
-from service.handlers.schemas.input import Input
+from cdk.{{cookiecutter.service_name}}.constants import APIGATEWAY, GW_RESOURCE
+from {{cookiecutter.service_name}}.handlers.schemas.input import Input
 from tests.utils import get_stack_output
 
 

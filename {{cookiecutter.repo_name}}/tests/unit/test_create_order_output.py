@@ -3,7 +3,7 @@ import uuid
 import pytest
 from aws_lambda_powertools.utilities.parser import ValidationError
 
-from service.schemas.output import CreateOrderOutput
+from {{cookiecutter.service_name}}.schemas.output import CreateOrderOutput
 
 order_id = str(uuid.uuid4())
 

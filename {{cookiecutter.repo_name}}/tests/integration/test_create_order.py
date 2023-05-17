@@ -6,9 +6,9 @@ import boto3
 from aws_lambda_powertools.utilities.feature_flags.exceptions import SchemaValidationError
 from botocore.stub import Stubber
 
-from service.dal.dynamo_dal_handler import DynamoDalHandler
-from service.handlers.create_order import create_order
-from service.handlers.schemas.input import Input
+from {{cookiecutter.service_name}}.dal.dynamo_dal_handler import DynamoDalHandler
+from {{cookiecutter.service_name}}.handlers.create_order import create_order
+from {{cookiecutter.service_name}}.handlers.schemas.input import Input
 from tests.utils import generate_api_gw_event, generate_context
 
 MOCKED_SCHEMA = {

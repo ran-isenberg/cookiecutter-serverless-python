@@ -4,7 +4,7 @@ from typing import Optional
 import aws_cdk.aws_appconfig as appconfig
 from constructs import Construct
 
-from cdk.my_service.configuration.schema import FeatureFlagsConfiguration
+from cdk.{{cookiecutter.service_name}}.configuration.schema import FeatureFlagsConfiguration
 
 DEFAULT_DEPLOYMENT_STRATEGY = 'AppConfig.AllAtOnce'
 

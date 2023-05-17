@@ -5,9 +5,9 @@ from aws_cdk import aws_lambda as _lambda
 from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion
 from aws_cdk.aws_logs import RetentionDays
 from constructs import Construct
-from my_service.api_db_construct import ApiDbConstruct  # type: ignore
+from {{cookiecutter.service_name}}.api_db_construct import ApiDbConstruct  # type: ignore
 
-import cdk.my_service.constants as constants
+import cdk.{{cookiecutter.service_name}}.constants as constants
 
 
 class ApiConstruct(Construct):
@@ -74,7 +74,7 @@ class ApiConstruct(Construct):
             constants.CREATE_LAMBDA,
             runtime=_lambda.Runtime.PYTHON_3_10,
             code=_lambda.Code.from_asset(constants.BUILD_FOLDER),
-            handler='service.handlers.create_order.create_order',
+            handler='{{cookiecutter.service_name}}.handlers.create_order.create_order',
             environment={
                 constants.POWERTOOLS_SERVICE_NAME: constants.SERVICE_NAME,  # for logger, tracer and metrics
                 constants.POWER_TOOLS_LOG_LEVEL: 'DEBUG',  # for logger

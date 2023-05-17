@@ -5,8 +5,8 @@ from unittest import mock
 import pytest
 from pydantic import BaseModel, HttpUrl
 
-from cdk.my_service.constants import POWER_TOOLS_LOG_LEVEL, POWERTOOLS_SERVICE_NAME, SERVICE_NAME
-from service.handlers.utils.env_vars_parser import get_environment_variables, init_environment_variables
+from cdk.{{cookiecutter.service_name}}.constants import POWER_TOOLS_LOG_LEVEL, POWERTOOLS_SERVICE_NAME, SERVICE_NAME
+from {{cookiecutter.service_name}}.handlers.utils.env_vars_parser import get_environment_variables, init_environment_variables
 from tests.utils import generate_context
 
 
