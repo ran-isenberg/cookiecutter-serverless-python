@@ -1,6 +1,0 @@
-[run]
-omit =
-    # omit everything in /tests
-    tests/*
-    # omit everything in /cdk
-    "cdk/*"
