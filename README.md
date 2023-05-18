@@ -39,10 +39,12 @@ The project is based on my [AWS Lambda Cookbook template project](https://github
 cookiecutter gh:ran-isenberg/cookiecutter-serverless-python
 ```
 
-Follow the guide:
+Follow the cookiecutter questions:
 
 ![logo](https://github.com/ran-isenberg/cookiecutter-serverless-python/blob/main/media/howto.png?raw=true)
 <br></br>
+
+Now, let's setup git for your new shiny projct:
 
 ```
 cd {new repo folder}
@@ -50,7 +52,7 @@ git init
 ```
 
 
-Now you can setup your developer environment and deploy to AWS. Run the following commands:
+Now you can create your developer environment and deploy to AWS. Run the following commands:
 
 ```
 make dev
