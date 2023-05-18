@@ -9,7 +9,7 @@
 ![logo](https://github.com/ran-isenberg/cookiecutter-serverless-python/blob/main/media/banner.png?raw=true)
 
 
-This project can serve as a template for new Serverless services - CDK deployment code, pipeline and handler are covered with best practices built in.
+This project can serve as a cookiecutter template for new Serverless services - CDK deployment code, pipeline and handler are covered with best practices built in.
 <br></br>
 The project is based on my [AWS Lambda Cookbook template project](https://github.com/ran-isenberg/aws-lambda-handler-cookbook):
 
