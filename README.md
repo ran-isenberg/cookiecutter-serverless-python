@@ -60,7 +60,7 @@ poetry install
 make pr
 ```
 
-Make 'pr' will run all checks, synth, file formatters , unit tests, deploy to AWS and run integration and E2E tests.
+'Make pr' will run all checks, synth, file formatters , unit tests, deploy to AWS and run integration and E2E tests.
 
 
 For more information head over to project documentation pages at [https://ran-isenberg.github.io/aws-lambda-handler-cookbook](https://ran-isenberg.github.io/aws-lambda-handler-cookbook/)
