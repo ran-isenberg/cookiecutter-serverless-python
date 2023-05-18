@@ -26,10 +26,10 @@ The project is based on my [AWS Lambda Cookbook template project](https://github
 <br></br>
 ## **Prerequisites**
 
-* **Docker** - install [Docker](https://www.docker.com/){target="_blank"}. Required for the Lambda layer packaging process.
+* **Docker** - install [Docker](https://www.docker.com/). Required for the Lambda layer packaging process.
 * **[AWS CDK](cdk.md)** - Required for synth & deploying the AWS Cloudformation stack.
 * Python 3.10
-* [poetry](https://pypi.org/project/poetry/){target="_blank"} - Make sure to run ``poetry config --local virtualenvs.in-project true`` so all dependencies are installed in the project '.venv' folder.
+* [poetry](https://pypi.org/project/poetry/) - Make sure to run ``poetry config --local virtualenvs.in-project true`` so all dependencies are installed in the project '.venv' folder.
 * For Windows based machines, use the Makefile_windows version (rename to Makefile). Default Makefile is for Mac/Linux.
 * Cookiecutter - install with pip/brew ``brew install cookiecutter`` or ``pip install cookiecutter`
 <br></br>
