@@ -31,7 +31,7 @@ The project is based on my [AWS Lambda Cookbook template project](https://github
 * Python 3.10
 * [poetry](https://pypi.org/project/poetry/) - Make sure to run ``poetry config --local virtualenvs.in-project true`` so all dependencies are installed in the project '.venv' folder.
 * For Windows based machines, use the Makefile_windows version (rename to Makefile). Default Makefile is for Mac/Linux.
-* Cookiecutter - install with pip/brew ``brew install cookiecutter`` or ``pip install cookiecutter`
+* Cookiecutter - install with pip/brew ``brew install cookiecutter`` or ``pip install cookiecutter``
 <br></br>
 ## Getting Started
 
