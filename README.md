@@ -44,23 +44,16 @@ Follow the cookiecutter questions:
 ![logo](https://github.com/ran-isenberg/cookiecutter-serverless-python/blob/main/media/howto.png?raw=true)
 <br></br>
 
-Now, let's setup git for your new shiny projct:
+
+### **That's it, your developer environment has been set! you are ready to deploy the service:**
 
 ```
 cd {new repo folder}
-git init
+poetry shell
+make deploy
 ```
 
-
-Now you can create your developer environment and deploy to AWS. Run the following commands:
-
-```
-make dev
-poetry install
-make pr
-```
-
-'Make pr' will run all checks, synth, file formatters , unit tests, deploy to AWS and run integration and E2E tests.
+You can also run 'make pr' will run all checks, synth, file formatters , unit tests, deploy to AWS and run integration and E2E tests.
 
 
 For more information head over to project documentation pages at [https://ran-isenberg.github.io/aws-lambda-handler-cookbook](https://ran-isenberg.github.io/aws-lambda-handler-cookbook/)
