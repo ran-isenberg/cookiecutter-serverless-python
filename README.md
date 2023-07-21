@@ -81,6 +81,7 @@ The documentation provides information about CDK deployment, makefile commands, 
 - AWS Lambda handler uses [AWS Lambda Powertools](https://awslabs.github.io/aws-lambda-powertools-python/).
 - AWS Lambda handler 3 layer architecture: handler layer, logic layer and data access layer
 - Features flags and configuration based on AWS AppConfig
+- Idempotent API
 - Unit, infrastructure, security, integration and E2E tests.
 <br></br>
 
@@ -106,6 +107,7 @@ The utilities cover multiple aspect of a production-ready service, including:
 - [Dynamic Configuration & feature flags](https://www.ranthebuilder.cloud/post/aws-lambda-cookbook-part-6-feature-flags-configuration-best-practices)
 - [Start Your AWS Serverless Service With Two Clicks](https://www.ranthebuilder.cloud/post/aws-lambda-cookbook-part-7-how-to-use-the-aws-lambda-cookbook-github-template-project)
 - [CDK Best practices](https://github.com/ran-isenberg/aws-lambda-handler-cookbook)
+- [Idempotent API](https://www.ranthebuilder.cloud/post/serverless-api-idempotency-with-aws-lambda-powertools-and-cdk)
 
 <br></br>
 ### Makefile Commands
