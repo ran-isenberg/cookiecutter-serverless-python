@@ -10,7 +10,6 @@ from {{cookiecutter.service_name}}.api_construct import ApiConstruct  # type: ig
 from cdk.{{cookiecutter.service_name}}.configuration.configuration_construct import ConfigurationStore
 from cdk.{{cookiecutter.service_name}}.constants import CONFIGURATION_NAME, ENVIRONMENT, SERVICE_NAME
 
-
 def get_username() -> str:
     try:
         return os.getlogin().replace('.', '-')
@@ -79,6 +78,10 @@ class ServiceStack(Stack):
                 {
                     'id': 'AwsSolutions-COG4',
                     'reason': 'not using cognito'
+                },
+                {
+                    'id': 'AwsSolutions-L1',
+                    'reason': 'https://github.com/aws/aws-cdk/issues/26451'
                 },
             ],
         )

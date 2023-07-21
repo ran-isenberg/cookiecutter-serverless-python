@@ -5,8 +5,8 @@ import pytest
 import requests
 
 from cdk.{{cookiecutter.service_name}}.constants import APIGATEWAY, GW_RESOURCE
-from {{cookiecutter.service_name}}.handlers.schemas.input import Input
-from tests.utils import get_stack_output
+from {{cookiecutter.service_name}}.schemas.input import CreateOrderRequest
+from tests.utils import generate_random_string, get_stack_output
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -15,14 +15,21 @@ def api_gw_url():
 
 
 def test_handler_200_ok(api_gw_url):
-    customer_name = 'RanTheBuilder'
-    body = Input(customer_name=customer_name, order_item_count=5)
-    response = requests.post(api_gw_url, data=body.json())
+    customer_name = f'{generate_random_string()}-RanTheBuilder'
+    body = CreateOrderRequest(customer_name=customer_name, order_item_count=5)
+    response = requests.post(api_gw_url, data=body.model_dump_json())
     assert response.status_code == HTTPStatus.OK
     body_dict = json.loads(response.text)
     assert body_dict['order_id']
     assert body_dict['customer_name'] == customer_name
     assert body_dict['order_item_count'] == 5
+
+    # check idempotency, send same request
+    original_order_id = body_dict['order_id']
+    response = requests.post(api_gw_url, data=body.model_dump_json())
+    assert response.status_code == HTTPStatus.OK
+    body_dict = json.loads(response.text)
+    assert body_dict['order_id'] == original_order_id
 
 
 def test_handler_bad_request(api_gw_url):
