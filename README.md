@@ -1,7 +1,7 @@
 # AWS Serverless service cookiecutter (Python)
 
 [![license](https://img.shields.io/github/license/ran-isenberg/cookiecutter-serverless-python)](https://github.com/ran-isenberg/cookiecutter-serverless-python/blob/master/LICENSE)
-![PythonSupport](https://img.shields.io/static/v1?label=python&message=3.10&color=blue?style=flat-square&logo=python)
+![PythonSupport](https://img.shields.io/static/v1?label=python&message=3.11&color=blue?style=flat-square&logo=python)
 ![version](https://img.shields.io/github/v/release/ran-isenberg/cookiecutter-serverless-python)
 ![github-star-badge](https://img.shields.io/github/stars/ran-isenberg/cookiecutter-serverless-python.svg?style=social)
 ![issues](https://img.shields.io/github/issues/ran-isenberg/cookiecutter-serverless-python)
@@ -14,7 +14,7 @@ This project can serve as a cookiecutter template for new Serverless services - 
 The project is based on my [AWS Lambda Cookbook template project](https://github.com/ran-isenberg/aws-lambda-handler-cookbook):
 
 [![license](https://img.shields.io/github/license/ran-isenberg/aws-lambda-handler-cookbook)](https://github.com/ran-isenberg/aws-lambda-handler-cookbook/blob/master/LICENSE)
-![PythonSupport](https://img.shields.io/static/v1?label=python&message=3.10&color=blue?style=flat-square&logo=python)
+![PythonSupport](https://img.shields.io/static/v1?label=python&message=3.11&color=blue?style=flat-square&logo=python)
 [![codecov](https://codecov.io/gh/ran-isenberg/aws-lambda-handler-cookbook/branch/main/graph/badge.svg?token=P2K7K4KICF)](https://codecov.io/gh/ran-isenberg/aws-lambda-handler-cookbook)
 ![version](https://img.shields.io/github/v/release/ran-isenberg/aws-lambda-handler-cookbook)
 ![github-star-badge](https://img.shields.io/github/stars/ran-isenberg/aws-lambda-handler-cookbook.svg?style=social)
@@ -28,7 +28,7 @@ The project is based on my [AWS Lambda Cookbook template project](https://github
 
 * **Docker** - install [Docker](https://www.docker.com/). Required for the Lambda layer packaging process.
 * **[AWS CDK](cdk.md)** - Required for synth & deploying the AWS Cloudformation stack.
-* Python 3.10
+* Python 3.11
 * [poetry](https://pypi.org/project/poetry/) - Make sure to run ``poetry config --local virtualenvs.in-project true`` so all dependencies are installed in the project '.venv' folder.
 * For Windows based machines, use the Makefile_windows version (rename to Makefile). Default Makefile is for Mac/Linux.
 * Cookiecutter - install with pip/brew ``brew install cookiecutter`` or ``pip install cookiecutter``
