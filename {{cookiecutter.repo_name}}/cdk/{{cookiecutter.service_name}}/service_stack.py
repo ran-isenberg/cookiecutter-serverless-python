@@ -5,8 +5,8 @@ from aws_cdk import Aspects, Stack, Tags
 from cdk_nag import AwsSolutionsChecks, NagSuppressions
 from constructs import Construct
 from git import Repo
-from {{cookiecutter.service_name}}.api_construct import ApiConstruct  # type: ignore
 
+from cdk.{{cookiecutter.service_name}}.api_construct import ApiConstruct
 from cdk.{{cookiecutter.service_name}}.configuration.configuration_construct import ConfigurationStore
 from cdk.{{cookiecutter.service_name}}.constants import CONFIGURATION_NAME, ENVIRONMENT, SERVICE_NAME
 
