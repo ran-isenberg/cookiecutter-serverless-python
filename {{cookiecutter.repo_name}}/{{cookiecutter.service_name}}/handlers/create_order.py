@@ -34,7 +34,7 @@ def create_order(event: Dict[str, Any], context: LambdaContext) -> Dict[str, Any
     try:
         my_configuration: MyConfiguration = parse_configuration(model=MyConfiguration)  # type: ignore
         logger.debug('fetched dynamic configuration', extra={'configuration': my_configuration.model_dump()})
-    except (SchemaValidationError, ConfigurationStoreError) as exc:
+    except (SchemaValidationError, ConfigurationStoreError) as exc: # pragma: no cover
         logger.exception(f'dynamic configuration error, error={str(exc)}')
         return build_response(http_status=HTTPStatus.INTERNAL_SERVER_ERROR, body={})
 
