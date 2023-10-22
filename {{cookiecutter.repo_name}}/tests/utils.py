@@ -1,12 +1,12 @@
 import json
 import random
 import string
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import boto3
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from cdk.{{cookiecutter.service_name}}.service_stack import get_stack_name
+from cdk.{{cookiecutter.service_name}}.utils import get_stack_name
 
 
 def generate_random_string(length: int = 3):
@@ -18,16 +18,19 @@ def generate_random_string(length: int = 3):
 def generate_context() -> LambdaContext:
     context = LambdaContext()
     context._aws_request_id = '888888'
+    context._function_name = 'test'
+    context._memory_limit_in_mb = 128
+    context._invoked_function_arn = ('arn:aws:lambda:eu-west-1:123456789012:function:test')
     return context
 
 
 # example taken from AWS Lambda Powertools test files
 # https://github.com/awslabs/aws-lambda-powertools-python/blob/develop/tests/events/apiGatewayProxyEvent.json
-def generate_api_gw_event(body: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+def generate_api_gw_event(body: Optional[dict[str, Any]]) -> dict[str, Any]:
     return {
         'version': '1.0',
-        'resource': '/my/path',
-        'path': '/my/path',
+        'resource': '/api/orders',
+        'path': '/api/orders',
         'httpMethod': 'POST',
         'headers': {
             'Header1': 'value1',
@@ -80,13 +83,13 @@ def generate_api_gw_event(body: Optional[Dict[str, Any]]) -> Dict[str, Any]:
                     }
                 }
             },
-            'path': '/my/path',
+            'path': '/api/orders',
             'protocol': 'HTTP/1.1',
             'requestId': 'id=',
             'requestTime': '04/Mar/2020:19:15:17 +0000',
             'requestTimeEpoch': 1583349317135,
             'resourceId': None,
-            'resourcePath': '/my/path',
+            'resourcePath': '/api/orders',
             'stage': '$default'
         },
         'pathParameters': None,

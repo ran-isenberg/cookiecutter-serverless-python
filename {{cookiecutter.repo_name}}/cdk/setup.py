@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='{{cookiecutter.service_name}}-cdk',
-    version='3.1',
+    version='1.0',
     description='CDK code for deploying the serverless service',
     classifiers=[
         'Intended Audience :: Developers',

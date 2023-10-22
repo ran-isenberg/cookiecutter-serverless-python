@@ -1,20 +1,15 @@
 from pathlib import Path
-from typing import Optional
 
-import aws_cdk.aws_appconfig as appconfig
+import aws_cdk.aws_appconfig_alpha as appconfig
+from aws_cdk import Duration, RemovalPolicy
 from constructs import Construct
 
 from cdk.{{cookiecutter.service_name}}.configuration.schema import FeatureFlagsConfiguration
 
-DEFAULT_DEPLOYMENT_STRATEGY = 'AppConfig.AllAtOnce'
-
-CUSTOM_ZERO_TIME_STRATEGY = 'zero'
-
 
 class ConfigurationStore(Construct):
 
-    def __init__(self, scope: Construct, id_: str, environment: str, service_name: str, configuration_name: str,
-                 deployment_strategy_id: Optional[str] = None) -> None:
+    def __init__(self, scope: Construct, id_: str, environment: str, service_name: str, configuration_name: str) -> None:
         """
         This construct should be deployed in a different repo and have its own pipeline so updates can be decoupled from
         running the service pipeline and without redeploying the service lambdas.
@@ -27,61 +22,54 @@ class ConfigurationStore(Construct):
                                'configuration/json/{environment}_configuration.json'
             service_name (str): application name.
             configuration_name (str): configuration name
-            deployment_strategy_id (str, optional): AWS AppConfig deployment strategy.
-                                                See https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-deployment-strategy.html
-                                                    Defaults to DEFAULT_DEPLOYMENT_STRATEGY.
         """
         super().__init__(scope, id_)
 
         configuration_str = self._get_and_validate_configuration(environment)
-
-        self.config_app = appconfig.CfnApplication(
+        self.app_name = f'{id_}{service_name}'
+        self.config_app = appconfig.Application(
             self,
-            id=f'{id_}{service_name}',
-            name=f'{id_}{service_name}',
+            id=self.app_name,
+            name=self.app_name,
         )
-        self.config_env = appconfig.CfnEnvironment(
+
+        self.config_app.apply_removal_policy(RemovalPolicy.DESTROY)
+
+        self.config_env = appconfig.Environment(
             self,
             id=f'{id_}env',
-            application_id=self.config_app.ref,
+            application=self.config_app,
             name=environment,
         )
-        self.config_profile = appconfig.CfnConfigurationProfile(
+
+        self.config_env.apply_removal_policy(RemovalPolicy.DESTROY)
+
+        # zero minutes, zero bake, 100 growth all at once
+        self.config_dep_strategy = appconfig.DeploymentStrategy(
             self,
-            id=f'{id_}profile',
-            application_id=self.config_app.ref,
-            location_uri='hosted',
-            name=configuration_name,
+            f'{id_}zero',
+            rollout_strategy=appconfig.RolloutStrategy.linear(
+                growth_factor=100,
+                deployment_duration=Duration.minutes(0),
+                final_bake_time=Duration.minutes(0),
+            ),
         )
-        self.hosted_cfg_version = appconfig.CfnHostedConfigurationVersion(
+
+        self.config_dep_strategy.apply_removal_policy(RemovalPolicy.DESTROY)
+
+        self.config = appconfig.HostedConfiguration(
             self,
             f'{id_}version',
-            application_id=self.config_app.ref,
-            configuration_profile_id=self.config_profile.ref,
-            content=configuration_str,
-            content_type='application/json',
+            application=self.config_app,
+            name=configuration_name,
+            content=appconfig.ConfigurationContent.from_inline(configuration_str),
+            type=appconfig.ConfigurationType.FREEFORM,
+            deployment_strategy=self.config_dep_strategy,
+            deploy_to=[self.config_env],
         )
 
-        self.cfn_deployment_strategy = appconfig.CfnDeploymentStrategy(
-            self,
-            f'{id_}{CUSTOM_ZERO_TIME_STRATEGY}',
-            deployment_duration_in_minutes=0,
-            growth_factor=100,
-            name=CUSTOM_ZERO_TIME_STRATEGY,
-            replicate_to='NONE',
-            description='zero minutes, zero bake, 100 growth all at once',
-            final_bake_time_in_minutes=0,
-        )
-
-        self.app_config_deployment = appconfig.CfnDeployment(
-            self,
-            id=f'{id_}deploy',
-            application_id=self.config_app.ref,
-            configuration_profile_id=self.config_profile.ref,
-            configuration_version=self.hosted_cfg_version.ref,
-            deployment_strategy_id=self.cfn_deployment_strategy.ref,
-            environment_id=self.config_env.ref,
-        )
+        # workaround until https://github.com/aws/aws-cdk/issues/26804 is resolved
+        self.config.node.default_child.apply_removal_policy(RemovalPolicy.DESTROY)  # type: ignore
 
     def _get_and_validate_configuration(self, environment: str) -> str:
         current = Path(__file__).parent
