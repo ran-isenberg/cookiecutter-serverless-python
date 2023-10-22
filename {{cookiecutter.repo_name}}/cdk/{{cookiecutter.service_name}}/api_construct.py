@@ -6,8 +6,9 @@ from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion
 from aws_cdk.aws_logs import RetentionDays
 from constructs import Construct
 
-from cdk.{{cookiecutter.service_name}}.api_db_construct import ApiDbConstruct
 import cdk.{{cookiecutter.service_name}}.constants as constants
+from cdk.{{cookiecutter.service_name}}.api_db_construct import ApiDbConstruct
+from cdk.{{cookiecutter.service_name}}.monitoring import CrudMonitoring
 
 
 class ApiConstruct(Construct):
@@ -20,7 +21,9 @@ class ApiConstruct(Construct):
         self.common_layer = self._build_common_layer()
         self.rest_api = self._build_api_gw()
         api_resource: aws_apigateway.Resource = self.rest_api.root.add_resource('api').add_resource(constants.GW_RESOURCE)
-        self._add_post_lambda_integration(api_resource, self.lambda_role, self.api_db.db, appconfig_app_name, self.api_db.idempotency_db)
+        self.create_order_func = self._add_post_lambda_integration(api_resource, self.lambda_role, self.api_db.db, appconfig_app_name,
+                                                                   self.api_db.idempotency_db)
+        self.monitoring = CrudMonitoring(self, id_, self.rest_api, self.api_db.db, self.api_db.idempotency_db, [self.create_order_func])
 
     def _build_api_gw(self) -> aws_apigateway.RestApi:
         rest_api: aws_apigateway.RestApi = aws_apigateway.RestApi(
@@ -81,13 +84,13 @@ class ApiConstruct(Construct):
         )
 
     def _add_post_lambda_integration(self, api_name: aws_apigateway.Resource, role: iam.Role, db: dynamodb.Table, appconfig_app_name: str,
-                                     idempotency_table: dynamodb.Table):
+                                     idempotency_table: dynamodb.Table) -> _lambda.Function:
         lambda_function = _lambda.Function(
             self,
             constants.CREATE_LAMBDA,
             runtime=_lambda.Runtime.PYTHON_3_11,
             code=_lambda.Code.from_asset(constants.BUILD_FOLDER),
-            handler='{{cookiecutter.service_name}}.handlers.create_order.create_order',
+            handler='{{cookiecutter.service_name}}.handlers.handle_create_order.lambda_handler',
             environment={
                 constants.POWERTOOLS_SERVICE_NAME: constants.SERVICE_NAME,  # for logger, tracer and metrics
                 constants.POWER_TOOLS_LOG_LEVEL: 'DEBUG',  # for logger
@@ -111,3 +114,4 @@ class ApiConstruct(Construct):
 
         # POST /api/orders/
         api_name.add_method(http_method='POST', integration=aws_apigateway.LambdaIntegration(handler=lambda_function))
+        return lambda_function

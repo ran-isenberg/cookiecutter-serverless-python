@@ -1,73 +1,81 @@
-.PHONY: dev lint complex coverage pre-commit yapf sort deploy destroy deps unit infra-tests integration e2e pipeline-tests docs lint-docs build
+.PHONY: dev lint complex coverage pre-commit sort deploy destroy deps unit infra-tests integration e2e coverage-tests docs lint-docs build format
+PYTHON := ".venv/bin/python3"
 
-
-
+.ONESHELL:  # run all commands in a single shell, ensuring it runs within a local virtual env
 dev:
 	pip install --upgrade pip pre-commit poetry
 	pre-commit install
+# ensures poetry creates a local virtualenv (.venv)
 	poetry config --local virtualenvs.in-project true
 	poetry install
+	npm ci
 
-lint:
+format-fix:
+	poetry run isort .
+	poetry run yapf -vv --style=./.style -r --in-place .
+
+format:
+	poetry run isort .
+	poetry run yapf -d -vv --style=./.style -r .
+
+lint: format
 	@echo "Running flake8"
-	flake8 {{cookiecutter.service_name}}/* cdk/* tests/* --exclude patterns='build,cdk.json,cdk.context.json,.yaml'
+	poetry run flake8 {{cookiecutter.service_name}}/* cdk/* tests/*
 	@echo "Running mypy"
-	make mypy-lint
+	$(MAKE) mypy-lint
 
 complex:
 	@echo "Running Radon"
-	radon cc -e 'tests/*,cdk.out/*' .
+	poetry run radon cc -e 'tests/*,cdk.out/*,node_modules/*' .
 	@echo "Running xenon"
-	xenon --max-absolute B --max-modules A --max-average A -e 'tests/*,.venv/*,cdk.out/*' .
-
-sort:
-	isort ${PWD}
+	poetry run xenon --max-absolute B --max-modules A --max-average A -e 'tests/*,.venv/*,cdk.out/*,node_modules/*' .
 
 pre-commit:
-	pre-commit run -a --show-diff-on-failure
+	poetry run pre-commit run -a --show-diff-on-failure
 
 mypy-lint:
-	mypy --pretty {{cookiecutter.service_name}} cdk tests
+	poetry run mypy --pretty {{cookiecutter.service_name}} cdk tests
 
 deps:
-	poetry export --only=dev --without-hashes --format=requirements.txt > dev_requirements.txt
-	poetry export --without=dev --without-hashes --format=requirements.txt > lambda_requirements.txt
+	poetry export --only=dev --format=requirements.txt > dev_requirements.txt
+	poetry export --without=dev --format=requirements.txt > lambda_requirements.txt
 
 unit:
-	pytest tests/unit  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
+	poetry run pytest tests/unit  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
-build:
-	make deps
+build: deps
 	mkdir -p .build/lambdas ; cp -r {{cookiecutter.service_name}} .build/lambdas
-	mkdir -p .build/common_layer ; poetry export --without=dev --without-hashes --format=requirements.txt > .build/common_layer/requirements.txt
+	mkdir -p .build/common_layer ; poetry export --without=dev --format=requirements.txt > .build/common_layer/requirements.txt
 
-infra-tests:
-	make build
-	pytest tests/infrastructure
+infra-tests: build
+	poetry run pytest tests/infrastructure
 
 integration:
-	pytest tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
+	poetry run pytest tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
 e2e:
-	pytest tests/e2e  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
+	poetry run pytest tests/e2e  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
-pr: deps yapf sort pre-commit complex lint unit deploy integration e2e
+pr: deps pre-commit complex lint lint-docs unit deploy coverage-tests e2e
 
-yapf:
-	yapf -i -vv --style=./.style --exclude=.venv --exclude=.build --exclude=cdk.out --exclude=.git  -r .
+coverage-tests:
+	poetry run pytest tests/unit tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
-pipeline-tests:
-	pytest tests/unit tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
-
-deploy:
-	make build
-	cdk deploy --app="python3 ${PWD}/app.py" --require-approval=never
+deploy: build
+	npx cdk deploy --app="${PYTHON} ${PWD}/app.py" --require-approval=never
 
 destroy:
-	cdk destroy --app="python3 ${PWD}/app.py" --force
+	npx cdk destroy --app="${PYTHON} ${PWD}/app.py" --force
 
 docs:
-	mkdocs serve
+	poetry run mkdocs serve
 
 lint-docs:
 	docker run -v ${PWD}:/markdown 06kellyjac/markdownlint-cli --fix "docs"
+
+watch:
+	npx cdk watch
+
+update-deps:
+	poetry update
+	npm i --package-lock-only
