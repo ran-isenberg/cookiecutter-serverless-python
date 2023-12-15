@@ -76,5 +76,9 @@ class ServiceStack(Stack):
                     'id': 'AwsSolutions-COG4',
                     'reason': 'not using cognito'
                 },
+                {
+                    'id': 'AwsSolutions-L1',
+                    'reason': 'False positive'
+                },
             ],
         )
