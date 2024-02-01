@@ -1,14 +1,13 @@
 from pathlib import Path
 
 import aws_cdk.aws_appconfig_alpha as appconfig
-from aws_cdk import Duration, RemovalPolicy
+from aws_cdk import Duration
 from constructs import Construct
 
 from cdk.{{cookiecutter.service_name}}.configuration.schema import FeatureFlagsConfiguration
 
 
 class ConfigurationStore(Construct):
-
     def __init__(self, scope: Construct, id_: str, environment: str, service_name: str, configuration_name: str) -> None:
         """
         This construct should be deployed in a different repo and have its own pipeline so updates can be decoupled from
@@ -30,19 +29,15 @@ class ConfigurationStore(Construct):
         self.config_app = appconfig.Application(
             self,
             id=self.app_name,
-            name=self.app_name,
+            application_name=self.app_name,
         )
-
-        self.config_app.apply_removal_policy(RemovalPolicy.DESTROY)
 
         self.config_env = appconfig.Environment(
             self,
             id=f'{id_}env',
             application=self.config_app,
-            name=environment,
+            environment_name=environment,
         )
-
-        self.config_env.apply_removal_policy(RemovalPolicy.DESTROY)
 
         # zero minutes, zero bake, 100 growth all at once
         self.config_dep_strategy = appconfig.DeploymentStrategy(
@@ -55,8 +50,6 @@ class ConfigurationStore(Construct):
             ),
         )
 
-        self.config_dep_strategy.apply_removal_policy(RemovalPolicy.DESTROY)
-
         self.config = appconfig.HostedConfiguration(
             self,
             f'{id_}version',
@@ -67,9 +60,6 @@ class ConfigurationStore(Construct):
             deployment_strategy=self.config_dep_strategy,
             deploy_to=[self.config_env],
         )
-
-        # workaround until https://github.com/aws/aws-cdk/issues/26804 is resolved
-        self.config.node.default_child.apply_removal_policy(RemovalPolicy.DESTROY)  # type: ignore
 
     def _get_and_validate_configuration(self, environment: str) -> str:
         current = Path(__file__).parent

@@ -34,16 +34,16 @@ jobs:
           BRANCH_NAME: ${{ github.ref }}
           REPO_NAME: ${{ github.repository }}
       - name: Check out repository code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Install poetry
         run: pipx install poetry
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "poetry" # NOTE: poetry must be installed before this step, or else cache doesn't work
       - name: Set up Node
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -73,9 +73,10 @@ jobs:
       - name: Codecov
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
-          fail_ci_if_error: false # optional (default = false)
-          verbose: false # optional (default = false)
+          fail_ci_if_error: yes # optional (default = false)
+          verbose: yes # optional (default = false)
       - name: Run E2E tests
         run: make e2e
         env:
@@ -99,16 +100,16 @@ jobs:
           BRANCH_NAME: ${{ github.ref }}
           REPO_NAME: ${{ github.repository }}
       - name: Check out repository code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Install poetry
         run: pipx install poetry
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "poetry" # NOTE: poetry must be installed before this step, or else cache doesn't work
       - name: Set up Node
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -138,13 +139,13 @@ jobs:
     if: contains('refs/heads/main', github.ref)
     steps:
       - name: Check out repository code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Set up Node
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
