@@ -9,21 +9,41 @@ from constructs import Construct
 import cdk.{{cookiecutter.service_name}}.constants as constants
 from cdk.{{cookiecutter.service_name}}.api_db_construct import ApiDbConstruct
 from cdk.{{cookiecutter.service_name}}.monitoring import CrudMonitoring
+from cdk.{{cookiecutter.service_name}}.waf_construct import WafToApiGatewayConstruct
 
 
 class ApiConstruct(Construct):
-
-    def __init__(self, scope: Construct, id_: str, appconfig_app_name: str) -> None:
+    def __init__(self, scope: Construct, id_: str, appconfig_app_name: str, is_production_env: bool) -> None:
         super().__init__(scope, id_)
         self.id_ = id_
         self.api_db = ApiDbConstruct(self, f'{id_}db')
         self.lambda_role = self._build_lambda_role(self.api_db.db, self.api_db.idempotency_db)
         self.common_layer = self._build_common_layer()
         self.rest_api = self._build_api_gw()
-        api_resource: aws_apigateway.Resource = self.rest_api.root.add_resource('api').add_resource(constants.GW_RESOURCE)
-        self.create_order_func = self._add_post_lambda_integration(api_resource, self.lambda_role, self.api_db.db, appconfig_app_name,
-                                                                   self.api_db.idempotency_db)
+        api_resource: aws_apigateway.Resource = self.rest_api.root.add_resource('api')
+        orders_resource = api_resource.add_resource(constants.GW_RESOURCE)
+        self.create_order_func = self._add_post_lambda_integration(
+            orders_resource, self.lambda_role, self.api_db.db, appconfig_app_name, self.api_db.idempotency_db
+        )
+        self._build_swagger_endpoints(rest_api=self.rest_api, dest_func=self.create_order_func)
         self.monitoring = CrudMonitoring(self, id_, self.rest_api, self.api_db.db, self.api_db.idempotency_db, [self.create_order_func])
+
+        if is_production_env:
+            # add WAF
+            self.waf = WafToApiGatewayConstruct(self, f'{id_}waf', self.rest_api)
+
+    def _build_swagger_endpoints(self, rest_api: aws_apigateway.RestApi, dest_func: _lambda.Function) -> None:
+        # GET /swagger
+        swagger_resource: aws_apigateway.Resource = rest_api.root.add_resource(constants.SWAGGER_RESOURCE)
+        swagger_resource.add_method(http_method='GET', integration=aws_apigateway.LambdaIntegration(handler=dest_func))
+        # GET /swagger.css
+        swagger_resource_css = rest_api.root.add_resource(constants.SWAGGER_CSS_RESOURCE)
+        swagger_resource_css.add_method(http_method='GET', integration=aws_apigateway.LambdaIntegration(handler=dest_func))
+        # GET /swagger.js
+        swagger_resource_js = rest_api.root.add_resource(constants.SWAGGER_JS_RESOURCE)
+        swagger_resource_js.add_method(http_method='GET', integration=aws_apigateway.LambdaIntegration(handler=dest_func))
+
+        CfnOutput(self, id=constants.SWAGGER_URL, value=f'{rest_api.url}swagger').override_logical_id(constants.SWAGGER_URL)
 
     def _build_api_gw(self) -> aws_apigateway.RestApi:
         rest_api: aws_apigateway.RestApi = aws_apigateway.RestApi(
@@ -44,30 +64,33 @@ class ApiConstruct(Construct):
             constants.SERVICE_ROLE_ARN,
             assumed_by=iam.ServicePrincipal('lambda.amazonaws.com'),
             inline_policies={
-                'dynamic_configuration':
-                    iam.PolicyDocument(statements=[
+                'dynamic_configuration': iam.PolicyDocument(
+                    statements=[
                         iam.PolicyStatement(
                             actions=['appconfig:GetLatestConfiguration', 'appconfig:StartConfigurationSession'],
                             resources=['*'],
                             effect=iam.Effect.ALLOW,
                         )
-                    ]),
-                'dynamodb_db':
-                    iam.PolicyDocument(statements=[
+                    ]
+                ),
+                'dynamodb_db': iam.PolicyDocument(
+                    statements=[
                         iam.PolicyStatement(
                             actions=['dynamodb:PutItem', 'dynamodb:GetItem'],
                             resources=[db.table_arn],
                             effect=iam.Effect.ALLOW,
                         )
-                    ]),
-                'idempotency_table':
-                    iam.PolicyDocument(statements=[
+                    ]
+                ),
+                'idempotency_table': iam.PolicyDocument(
+                    statements=[
                         iam.PolicyStatement(
                             actions=['dynamodb:PutItem', 'dynamodb:GetItem', 'dynamodb:UpdateItem', 'dynamodb:DeleteItem'],
                             resources=[idempotency_table.table_arn],
                             effect=iam.Effect.ALLOW,
                         )
-                    ]),
+                    ]
+                ),
             },
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name(managed_policy_name=(f'service-role/{constants.LAMBDA_BASIC_EXECUTION_ROLE}'))
@@ -83,17 +106,18 @@ class ApiConstruct(Construct):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
-    def _add_post_lambda_integration(self, api_name: aws_apigateway.Resource, role: iam.Role, db: dynamodb.Table, appconfig_app_name: str,
-                                     idempotency_table: dynamodb.Table) -> _lambda.Function:
+    def _add_post_lambda_integration(
+        self, api_resource: aws_apigateway.Resource, role: iam.Role, db: dynamodb.Table, appconfig_app_name: str, idempotency_table: dynamodb.Table
+    ) -> _lambda.Function:
         lambda_function = _lambda.Function(
             self,
             constants.CREATE_LAMBDA,
             runtime=_lambda.Runtime.PYTHON_3_12,
             code=_lambda.Code.from_asset(constants.BUILD_FOLDER),
-            handler='{{cookiecutter.service_name}}.handlers.handle_create_order.lambda_handler',
+            handler='service.handlers.handle_create_order.lambda_handler',
             environment={
                 constants.POWERTOOLS_SERVICE_NAME: constants.SERVICE_NAME,  # for logger, tracer and metrics
-                constants.POWER_TOOLS_LOG_LEVEL: 'DEBUG',  # for logger
+                constants.POWER_TOOLS_LOG_LEVEL: 'INFO',  # for logger
                 'CONFIGURATION_APP': appconfig_app_name,  # for feature flags
                 'CONFIGURATION_ENV': constants.ENVIRONMENT,  # for feature flags
                 'CONFIGURATION_NAME': constants.CONFIGURATION_NAME,  # for feature flags
@@ -110,8 +134,10 @@ class ApiConstruct(Construct):
             layers=[self.common_layer],
             role=role,
             log_retention=RetentionDays.ONE_DAY,
+            log_format=_lambda.LogFormat.JSON.value,
+            system_log_level=_lambda.SystemLogLevel.INFO.value,
         )
 
         # POST /api/orders/
-        api_name.add_method(http_method='POST', integration=aws_apigateway.LambdaIntegration(handler=lambda_function))
+        api_resource.add_method(http_method='POST', integration=aws_apigateway.LambdaIntegration(handler=lambda_function))
         return lambda_function

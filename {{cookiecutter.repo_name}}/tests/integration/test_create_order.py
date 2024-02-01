@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from http import HTTPStatus
 from typing import Any
 
@@ -18,19 +18,13 @@ MOCKED_SCHEMA = {
             'rules': {
                 'enable premium features for this specific customer name"': {
                     'when_match': True,
-                    'conditions': [{
-                        'action': 'EQUALS',
-                        'key': 'customer_name',
-                        'value': 'RanTheBuilder'
-                    }]
+                    'conditions': [{'action': 'EQUALS', 'key': 'customer_name', 'value': 'RanTheBuilder'}],
                 }
-            }
+            },
         },
-        'ten_percent_off_campaign': {
-            'default': True
-        }
+        'ten_percent_off_campaign': {'default': True},
     },
-    'countries': ['ISRAEL', 'USA']
+    'countries': ['ISRAEL', 'USA'],
 }
 
 
@@ -50,6 +44,7 @@ def call_create_order(body: dict[str, Any]) -> dict[str, Any]:
     # conf.test sets that env. variable (table name) but it runs after imports
     # this way, idempotency import runs after conftest sets the values already
     from {{cookiecutter.service_name}}.handlers.handle_create_order import lambda_handler
+
     return lambda_handler(body, generate_context())
 
 
@@ -75,7 +70,7 @@ def test_handler_200_ok(mocker, table_name: str):
     assert 'Item' in response
     assert response['Item']['name'] == customer_name
     assert response['Item']['item_count'] == order_item_count
-    now = int(datetime.utcnow().timestamp())
+    now = int(datetime.now(timezone.utc).timestamp())
     assert now - int(response['Item']['created_at']) <= 60  # assume item was created in last minute, check that utc time calc is correct
 
 
@@ -94,6 +89,8 @@ def test_internal_server_error(mocker, table_name: str):
 
         # Then: Ensure the response reflects an internal server error
         assert response['statusCode'] == HTTPStatus.INTERNAL_SERVER_ERROR
+        body_dict = json.loads(response['body'])
+        assert body_dict == {'error': 'internal server error'}
 
 
 def test_handler_bad_request(mocker):
@@ -103,10 +100,10 @@ def test_handler_bad_request(mocker):
     # When: The order creation lambda_handler is called with invalid input
     response = call_create_order(generate_api_gw_event({'order_item_count': 5}))
 
-    # Then: Validate the response is a bad request and error message is correct
-    assert response['statusCode'] == HTTPStatus.BAD_REQUEST
+    # Then: Validate the response is a unprocessable entity and error message is correct
+    assert response['statusCode'] == HTTPStatus.UNPROCESSABLE_ENTITY
     body_dict = json.loads(response['body'])
-    assert body_dict == {'error': 'invalid input'}
+    assert body_dict.get('detail') == [{'loc': ['body', 'customer_name'], 'type': 'missing'}]
 
 
 def test_handler_failed_appconfig_fetch(mocker):

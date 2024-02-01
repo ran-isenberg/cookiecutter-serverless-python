@@ -11,7 +11,7 @@
 
 This project can serve as a cookiecutter template for new Serverless services - CDK deployment code, pipeline and handler are covered with best practices built in.
 <br></br>
-The project is based on my [AWS Lambda Cookbook template project](https://github.com/ran-isenberg/aws-lambda-handler-cookbook):
+The project is based on my [AWS Lambda Cookbook template project](https://github.com/ran-isenberg/aws-lambda-handler-cookbook) and synced to version 4.5.1:
 
 [![license](https://img.shields.io/github/license/ran-isenberg/aws-lambda-handler-cookbook)](https://github.com/ran-isenberg/aws-lambda-handler-cookbook/blob/master/LICENSE)
 ![PythonSupport](https://img.shields.io/static/v1?label=python&message=3.11&color=blue?style=flat-square&logo=python)
@@ -81,15 +81,18 @@ The documentation provides information about CDK deployment, makefile commands, 
 - Python Serverless service with a recommended file structure.
 - CDK infrastructure with infrastructure tests and security tests.
 - CI/CD pipelines based on Github actions that deploys to AWS with python linters, complexity checks and style formatters.
-- CI/CD pipeline deploys to dev/staging and production environment with different gates between each environment
+- CI/CD pipeline deploys to dev/staging and production environments with different gates between each environment
 - Makefile for simple developer experience.
 - The AWS Lambda handler embodies Serverless best practices and has all the bells and whistles for a proper production ready handler.
 - AWS Lambda handler uses [AWS Lambda Powertools](https://docs.powertools.aws.dev/lambda-python/).
 - AWS Lambda handler 3 layer architecture: handler layer, logic layer and data access layer
 - Features flags and configuration based on AWS AppConfig
 - Idempotent API
+- REST API protected by WAF with four AWS managed rules in production deployment
 - CloudWatch dashboards - High level and low level including CloudWatch alarms
 - Unit, infrastructure, security, integration and end to end tests.
+- Automatically generated OpenAPI endpoint: /swagger with Pydnatic schemas for both requests and responses
+- CI swagger protection - fails the PR if your swagger JSON file (stored at docs/swagger/openapi.json) is out of date
 <br></br>
 
 ## CDK Deployment
