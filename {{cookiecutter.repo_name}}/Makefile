@@ -35,32 +35,32 @@ pre-commit:
 	poetry run pre-commit run -a --show-diff-on-failure
 
 mypy-lint:
-	poetry run mypy --pretty service cdk tests
+	poetry run mypy --pretty {{cookiecutter.service_name}} cdk tests
 
 deps:
 	poetry export --only=dev --format=requirements.txt > dev_requirements.txt
 	poetry export --without=dev --format=requirements.txt > lambda_requirements.txt
 
 unit:
-	poetry run pytest tests/unit  --cov-config=.coveragerc --cov=service --cov-report xml
+	poetry run pytest tests/unit  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
 build: deps
-	mkdir -p .build/lambdas ; cp -r service .build/lambdas
+	mkdir -p .build/lambdas ; cp -r {{cookiecutter.service_name}} .build/lambdas
 	mkdir -p .build/common_layer ; poetry export --without=dev --format=requirements.txt > .build/common_layer/requirements.txt
 
 infra-tests: build
 	poetry run pytest tests/infrastructure
 
 integration:
-	poetry run pytest tests/integration  --cov-config=.coveragerc --cov=service --cov-report xml
+	poetry run pytest tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
 e2e:
-	poetry run pytest tests/e2e  --cov-config=.coveragerc --cov=service --cov-report xml
+	poetry run pytest tests/e2e  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
 pr: deps format pre-commit complex lint lint-docs unit deploy coverage-tests e2e openapi
 
 coverage-tests:
-	poetry run pytest tests/unit tests/integration  --cov-config=.coveragerc --cov=service --cov-report xml
+	poetry run pytest tests/unit tests/integration  --cov-config=.coveragerc --cov={{cookiecutter.service_name}} --cov-report xml
 
 deploy: build
 	npx cdk deploy --app="${PYTHON} ${PWD}/app.py" --require-approval=never

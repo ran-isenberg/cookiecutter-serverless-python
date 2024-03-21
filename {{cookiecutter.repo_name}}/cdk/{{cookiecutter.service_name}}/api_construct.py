@@ -58,7 +58,7 @@ class ApiConstruct(Construct):
         CfnOutput(self, id=constants.APIGATEWAY, value=rest_api.url).override_logical_id(constants.APIGATEWAY)
         return rest_api
 
-    def _build_lambda_role(self, db: dynamodb.Table, idempotency_table: dynamodb.Table) -> iam.Role:
+    def _build_lambda_role(self, db: dynamodb.TableV2, idempotency_table: dynamodb.TableV2) -> iam.Role:
         return iam.Role(
             self,
             constants.SERVICE_ROLE_ARN,
@@ -107,14 +107,19 @@ class ApiConstruct(Construct):
         )
 
     def _add_post_lambda_integration(
-        self, api_resource: aws_apigateway.Resource, role: iam.Role, db: dynamodb.Table, appconfig_app_name: str, idempotency_table: dynamodb.Table
+        self,
+        api_resource: aws_apigateway.Resource,
+        role: iam.Role,
+        db: dynamodb.TableV2,
+        appconfig_app_name: str,
+        idempotency_table: dynamodb.TableV2,
     ) -> _lambda.Function:
         lambda_function = _lambda.Function(
             self,
             constants.CREATE_LAMBDA,
             runtime=_lambda.Runtime.PYTHON_3_12,
             code=_lambda.Code.from_asset(constants.BUILD_FOLDER),
-            handler='service.handlers.handle_create_order.lambda_handler',
+            handler='{{cookiecutter.service_name}}.handlers.handle_create_order.lambda_handler',
             environment={
                 constants.POWERTOOLS_SERVICE_NAME: constants.SERVICE_NAME,  # for logger, tracer and metrics
                 constants.POWER_TOOLS_LOG_LEVEL: 'INFO',  # for logger
