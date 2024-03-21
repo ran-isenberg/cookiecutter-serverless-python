@@ -28,11 +28,10 @@ aws-lambda-env-modeler = "*"
 [tool.poetry.dev-dependencies]
 # CDK
 service-cdk = {path = "cdk", develop = true}
-aws-cdk-lib = ">=2.99.0"
+aws-cdk-lib = ">=2.130.0"
 constructs = ">=10.0.0"
 cdk-nag = ">2.0.0"
-"aws-cdk.aws-lambda-python-alpha" = "^2.99.0-alpha.0"
-"aws-cdk.aws-appconfig-alpha" = "^2.99.0-alpha.0"
+"aws-cdk.aws-lambda-python-alpha" = "^2.130.0-alpha.0"
 cdk-monitoring-constructs = "*"
 # DEV
 pytest = "*"
@@ -120,5 +119,5 @@ indent-style = "space"
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-third-party = ["pydantic", "aws_lambda_powertools"]
