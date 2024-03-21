@@ -15,7 +15,7 @@ from cdk_monitoring_constructs import (
 )
 from constructs import Construct
 
-from cdk.service import constants
+from cdk.{{cookiecutter.service_name}} import constants
 
 
 class CrudMonitoring(Construct):
