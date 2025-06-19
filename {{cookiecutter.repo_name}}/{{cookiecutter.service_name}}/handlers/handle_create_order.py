@@ -14,7 +14,7 @@ from {{cookiecutter.service_name}}.handlers.utils.observability import logger, m
 from {{cookiecutter.service_name}}.handlers.utils.rest_api_resolver import ORDERS_PATH, app
 from {{cookiecutter.service_name}}.logic.create_order import create_order
 from {{cookiecutter.service_name}}.models.input import CreateOrderRequest
-from {{cookiecutter.service_name}}.models.output import CreateOrderOutput, InternalServerErrorOutput, InvalidRestApiRequest
+from {{cookiecutter.service_name}}.models.output import CreateOrderOutput, InternalServerErrorOutput
 
 
 @app.post(
