@@ -64,6 +64,7 @@ jobs:
       - name: Run make pr command
         run: |
           cd my_serverless_service
+          make dev
           make pr
       - name: Destroy stack
         if: always()
