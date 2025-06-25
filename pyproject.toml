@@ -20,9 +20,9 @@ license = "MIT-0"
 
 [tool.poetry.dependencies]
 python = "^3.13.0"
+cookiecutter = "*"
 
 [tool.poetry.group.dev.dependencies]
-cookiecutter = "*"
 toml = "*"
 
 [tool.poetry.requires-plugins]
