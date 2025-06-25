@@ -66,4 +66,5 @@ jobs:
           cd my_serverless_service
           make dev
           make pr
+          make coverage
           make destroy
