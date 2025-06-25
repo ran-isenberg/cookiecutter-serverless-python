@@ -73,10 +73,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
-      - name: Run cybr pr command
+      - name: Run make pr command
         run: |
-          cd test_serverless_service
-          make dev
           make pr
       - name: Destroy stack
         if: always()
