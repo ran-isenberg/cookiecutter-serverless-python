@@ -68,6 +68,10 @@ jobs:
 
           # Run cookiecutter with the answers file
           poetry run cookiecutter --no-input -f --config-file cookiecutter-answers.json .
+
+          # List the created directories for debugging
+          echo "Listing directories in current path:"
+          ls -la
       - name: Set up Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
@@ -75,10 +79,34 @@ jobs:
           cache: "npm"
       - name: Run make pr command
         run: |
-          cd test_serverless_service
+          # Check what directories are available before trying to enter
+          echo "Available directories:"
+          ls -la
+
+          # Try to find the generated directory
+          GENERATED_DIR=$(find . -maxdepth 1 -type d -not -path "*/\.*" -not -path "." | head -1)
+
+          if [ -z "$GENERATED_DIR" ]; then
+            echo "No generated directory found. Cookiecutter may have failed."
+            exit 1
+          fi
+
+          echo "Found generated directory: $GENERATED_DIR"
+          cd "$GENERATED_DIR"
+          echo "Now in directory: $(pwd)"
+          ls -la
+
           make pr
       - name: Destroy stack
         if: always()
         run: |
-          cd test_serverless_service
-          make destroy
+          # Try to find the generated directory
+          GENERATED_DIR=$(find . -maxdepth 1 -type d -not -path "*/\.*" -not -path "." | head -1)
+
+          if [ -n "$GENERATED_DIR" ]; then
+            echo "Cleaning up in directory: $GENERATED_DIR"
+            cd "$GENERATED_DIR"
+            make destroy
+          else
+            echo "No generated directory found, nothing to destroy."
+          fi
