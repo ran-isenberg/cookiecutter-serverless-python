@@ -55,7 +55,7 @@ jobs:
           SESSION_NAME: "github-${{github.sha}}-dev"
       - name: Run Cookiecutter with predefined answers
         run: |
-          poetry run cookiecutter --no-input
+          poetry run cookiecutter --no-input .
       - name: Set up Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
