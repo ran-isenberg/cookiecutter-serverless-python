@@ -75,7 +75,10 @@ jobs:
           cache: "npm"
       - name: Run make pr command
         run: |
+          cd test_serverless_service
           make pr
       - name: Destroy stack
         if: always()
-        run: make destroy
+        run: |
+          cd test_serverless_service
+          make destroy
