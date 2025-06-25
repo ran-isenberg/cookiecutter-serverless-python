@@ -1,0 +1,30 @@
+[build-system]
+requires = ["poetry>=2.0.1"]
+build-backend = "poetry.core.masonry.api"
+[tool.poetry]
+name = "cookiecutter-serverless-python"
+version = "1.0.0"
+description = "This repository provides a working, deployable, open source based, AWS Lambda handler and CDK Python code. This handler embodies Serverless best practices and has all the bells and whistles for a proper production ready handler"
+authors = ["Ran Isenberg"]
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.13",
+]
+repository="https://github.com/ran-isenberg/aws-lambda-handler-cookbook"
+readme = "README.md"
+keywords = ["aws lambda cookbook", "guide to aws lambda", "cdk blueprint", "best practices", "serverless service blueprint"]
+license = "MIT-0"
+
+[tool.poetry.dependencies]
+python = "^3.13.0"
+
+[tool.poetry.group.dev.dependencies]
+cookiecutter = "*"
+toml = "*"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.9"
+
