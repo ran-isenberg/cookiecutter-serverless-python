@@ -1,0 +1,65 @@
+name: Cookiecutter Template Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  test-cookiecutter-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pipx
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipx
+
+      - name: Install Poetry
+        run: |
+          pipx install poetry
+
+      - name: Install Cookiecutter
+        run: |
+          pipx install cookiecutter
+
+      - name: Run Cookiecutter with predefined answers
+        run: |
+          # Create a cookiecutter-answers.json file with predefined answers
+          cat > cookiecutter-answers.json << EOF
+          {
+            "repo_name": "test_serverless_service",
+            "service_name": "test_service",
+            "email": "test@example.com",
+            "author": "Test User",
+            "description": "A test serverless service for CI"
+          }
+          EOF
+          
+          # Run cookiecutter with the answers file
+          cookiecutter --no-input -f --config-file cookiecutter-answers.json .
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'test_serverless_service/package-lock.json'
+
+      - name: Run cybr pr command
+        run: |
+          cd test_serverless_service
+          make dev
+          make pr
