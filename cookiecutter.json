@@ -1,6 +1,6 @@
 {
     "repo_name": "my_serverless_service",
-    "service_name": "service",
+    "service_name": "myservice",
     "email": "dummy@dummy.com",
     "author": "Dr. Myfull Name",
     "description": "My serverless service description",
