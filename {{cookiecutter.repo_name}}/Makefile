@@ -70,7 +70,7 @@ docs:
 	uv run mkdocs serve
 
 lint-docs:
-	docker run -v ${PWD}:/markdown 06kellyjac/markdownlint-cli --fix "docs"
+	npx markdownlint-cli2 "docs/**/*.md" --fix
 
 watch:
 	npx cdk watch
