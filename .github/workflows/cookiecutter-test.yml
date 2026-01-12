@@ -39,13 +39,9 @@ jobs:
           enable-cache: true
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
-      - name: Install poetry
-        run: pipx install poetry
       - name: Install dependencies
         run: |
-          pip install --upgrade pip poetry
-          poetry config --local virtualenvs.in-project true
-          poetry install --no-root
+          uv sync
           npm ci
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
@@ -57,7 +53,7 @@ jobs:
           SESSION_NAME: "github-${{github.sha}}-dev"
       - name: Run Cookiecutter with predefined answers
         run: |
-          poetry run cookiecutter --no-input .
+          uv run cookiecutter --no-input .
       - name: Set up Node
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:

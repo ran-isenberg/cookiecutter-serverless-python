@@ -18,8 +18,8 @@ The project is based on my [AWS Lambda Cookbook template project](https://github
 
 * **Docker** - install [Docker](https://www.docker.com/). Required for the Lambda layer packaging process.
 * **[AWS CDK](cdk.md)** - Required for synth & deploying the AWS Cloudformation stack.
-* Python 3.13
-* [poetry](https://pypi.org/project/poetry/) - Make sure to use poetry 2 and above and run ``poetry config --local virtualenvs.in-project true`` so all dependencies are installed in the project '.venv' folder.
+* Python 3.14
+* [uv](https://docs.astral.sh/uv/) - Install with ``curl -LsSf https://astral.sh/uv/install.sh | sh`` or ``brew install uv``
 * For Windows based machines, use the Makefile_windows version (rename to Makefile). Default Makefile is for Mac/Linux.
 * Cookiecutter - install with pip/brew ``brew install cookiecutter`` or ``pip install cookiecutter``
 <br></br>
@@ -39,7 +39,7 @@ Follow the cookiecutter questions:
 
 ```
 cd {new repo folder}
-poetry env activate
+make dev
 make deploy
 ```
 
@@ -114,8 +114,7 @@ The utilities cover multiple aspect of a production-ready service, including:
 ### Makefile Commands
 #### **Creating a Developer Environment**
 
-1. Run ``make dev``
-2. Run ``poetry install``
+1. Run ``make dev`` - This will install uv, sync dependencies, and set up pre-commit hooks
 
 <br></br>
 #### **Deploy CDK**
