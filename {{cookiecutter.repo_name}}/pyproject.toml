@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aws_lambda_handler_cookbook"
-version = "3.0.0"
+version = "9.2.1"
 description = "This repository provides a working, deployable, open source based, AWS Lambda handler and CDK Python code. This handler embodies Serverless best practices and has all the bells and whistles for a proper production ready handler"
 authors = [{name = "Ran Isenberg"}]
 classifiers = [
@@ -22,7 +22,7 @@ dependencies = [
     "pydantic>=2.12.0",
     "email-validator",
     "aws-lambda-powertools[tracer]>=3.22.1",
-    "mypy-boto3-dynamodb",
+    "pydynox[pydantic]>=0.22.0",
     "cachetools",
     "boto3>=1.26.125",
     "aws-lambda-env-modeler",
@@ -53,14 +53,11 @@ dev = [
     "radon",
     "xenon",
     "pre-commit",
-    "mkdocs-material",
-    "mkdocs-git-revision-date-plugin",
-    "mkdocs-glightbox",
+    "zensical",
     "types-cachetools",
     "mypy",
     "types-requests",
     "toml",
-    "mkdocs-render-swagger-plugin",
 ]
 
 [tool.uv.sources]
