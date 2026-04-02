@@ -15,13 +15,13 @@ nav:
       - best_practices/tracer.md
       - best_practices/metrics.md
       - best_practices/environment_variables.md
-      - Architecture Layers: https://www.ranthebuilder.cloud/post/learn-how-to-write-aws-lambda-functions-with-architecture-layers" target="_blank"
+      - Architecture Layers: https://ranthebuilder.cloud/blog/learn-how-to-write-aws-lambda-functions-with-architecture-layers/" target="_blank"
       - best_practices/input_validation.md
       - best_practices/dynamic_configuration.md
       - best_practices/monitoring.md
-      - Idempotency: https://www.ranthebuilder.cloud/post/serverless-api-idempotency-with-aws-lambda-powertools-and-cdk" target="_blank"
-      - CDK Best practices: https://www.ranthebuilder.cloud/post/aws-cdk-best-practices-from-the-trenches" target="_blank"
-      - Testing Best practices: https://www.ranthebuilder.cloud/post/guide-to-serverless-lambda-testing-best-practices-part-1" target="_blank"
+      - Idempotency: https://ranthebuilder.cloud/blog/serverless-api-idempotency-with-aws-lambda-powertools-and-cdk/" target="_blank"
+      - CDK Best practices: https://ranthebuilder.cloud/blog/aws-cdk-best-practices-from-the-trenches/" target="_blank"
+      - Testing Best practices: https://ranthebuilder.cloud/blog/guide-to-serverless-lambda-testing-best-practices-part-1/" target="_blank"
 
 theme:
   name: material
@@ -113,4 +113,4 @@ extra:
     - icon: fontawesome/brands/medium
       link: https://medium.com/@isenberg-ran
     - icon: fontawesome/solid/globe
-      link: https://www.ranthebuilder.cloud
+      link: https://ranthebuilder.cloud/

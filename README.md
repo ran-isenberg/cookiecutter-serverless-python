@@ -178,17 +178,17 @@ Each utility is implemented when a new blog post is published about that utility
 
 The utilities cover multiple aspects of a production-ready service, including:
 
-* [Logging](https://ranthebuilder.cloud/post/aws-lambda-cookbook-elevate-your-handler-s-code-part-1-logging/)
-* [Observability: Monitoring and Tracing](https://ranthebuilder.cloud/post/aws-lambda-cookbook-elevate-your-handler-s-code-part-2-observability/)
-* [Observability: Business KPIs Metrics](https://ranthebuilder.cloud/post/aws-lambda-cookbook-elevate-your-handler-s-code-part-3-business-domain-observability/)
-* [Environment Variables](https://ranthebuilder.cloud/post/aws-lambda-cookbook-environment-variables/)
-* [Input Validation](https://ranthebuilder.cloud/post/aws-lambda-cookbook-elevate-your-handler-s-code-part-5-input-validation/)
-* [Dynamic Configuration & feature flags](https://ranthebuilder.cloud/post/aws-lambda-cookbook-part-6-feature-flags-configuration-best-practices/)
-* [Start Your AWS Serverless Service With Two Clicks](https://ranthebuilder.cloud/post/aws-lambda-cookbook-part-7-how-to-use-the-aws-lambda-cookbook-github-template-project/)
+* [Logging](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-elevate-your-handler-s-code-part-1-logging/)
+* [Observability: Monitoring and Tracing](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-elevate-your-handler-s-code-part-2-observability/)
+* [Observability: Business KPIs Metrics](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-elevate-your-handler-s-code-part-3-business-domain-observability/)
+* [Environment Variables](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-environment-variables/)
+* [Input Validation](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-elevate-your-handler-s-code-part-5-input-validation/)
+* [Dynamic Configuration & feature flags](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-part-6-feature-flags-configuration-best-practices/)
+* [Start Your AWS Serverless Service With Two Clicks](https://ranthebuilder.cloud/blog/aws-lambda-cookbook-part-7-how-to-use-the-aws-lambda-cookbook-github-template-project/)
 * [CDK Best practices](https://ranthebuilder.cloud/blog/aws-cdk-best-practices-from-the-trenches/)
-* [Serverless Monitoring](https://ranthebuilder.cloud/post/how-to-effortlessly-monitor-serverless-applications-with-cloudwatch-part-one/)
-* [API Idempotency](https://ranthebuilder.cloud/post/serverless-api-idempotency-with-aws-lambda-powertools-and-cdk/)
-* [Serverless OpenAPI Documentation with AWS Powertools](https://ranthebuilder.cloud/post/serverless-open-api-documentation-with-aws-powertools/)
+* [Serverless Monitoring](https://ranthebuilder.cloud/blog/how-to-effortlessly-monitor-serverless-applications-with-cloudwatch-part-one/)
+* [API Idempotency](https://ranthebuilder.cloud/blog/serverless-api-idempotency-with-aws-lambda-powertools-and-cdk/)
+* [Serverless OpenAPI Documentation with AWS Powertools](https://ranthebuilder.cloud/blog/serverless-open-api-documentation-with-aws-powertools/)
 
 ### Makefile Commands
 

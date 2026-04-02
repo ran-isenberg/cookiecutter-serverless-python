@@ -18,7 +18,7 @@ from tests.utils import get_stack_output
 def init():
     os.environ[POWERTOOLS_SERVICE_NAME] = SERVICE_NAME
     os.environ[POWER_TOOLS_LOG_LEVEL] = 'DEBUG'
-    os.environ['REST_API'] = 'https://www.ranthebuilder.cloud/api'
+    os.environ['REST_API'] = 'https://ranthebuilder.cloud/api'
     os.environ['ROLE_ARN'] = 'arn:partition:service:region:account-id:resource-type:resource-id'
     os.environ['CONFIGURATION_APP'] = SERVICE_NAME
     os.environ['CONFIGURATION_ENV'] = ENVIRONMENT

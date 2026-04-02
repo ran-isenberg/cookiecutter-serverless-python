@@ -140,7 +140,7 @@ class ApiConstruct(Construct):
                 'CONFIGURATION_ENV': constants.ENVIRONMENT,  # for feature flags
                 'CONFIGURATION_NAME': constants.CONFIGURATION_NAME,  # for feature flags
                 'CONFIGURATION_MAX_AGE_MINUTES': constants.CONFIGURATION_MAX_AGE_MINUTES,  # for feature flags
-                'REST_API': 'https://www.ranthebuilder.cloud/api',  # for env vars example
+                'REST_API': 'https://ranthebuilder.cloud/api',  # for env vars example
                 'ROLE_ARN': 'arn:partition:service:region:account-id:resource-type:resource-id',  # for env vars example
                 'TABLE_NAME': db.table_name,
                 'IDEMPOTENCY_TABLE_NAME': idempotency_table.table_name,
