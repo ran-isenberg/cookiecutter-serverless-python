@@ -3,13 +3,19 @@ from http import HTTPStatus
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver, Response, content_types
 
 from {{cookiecutter.service_name}}.handlers.utils.observability import logger
-from {{cookiecutter.service_name}}.models.exceptions import DynamicConfigurationException, InternalServerException
-from {{cookiecutter.service_name}}.models.output import InternalServerErrorOutput
+from {{cookiecutter.service_name}}.models.exceptions import DynamicConfigurationException, InternalServerException, OrderNotFoundException
+from {{cookiecutter.service_name}}.models.output import InternalServerErrorOutput, OrderNotFoundOutput
 
 ORDERS_PATH = '/api/orders/'
 
 app = APIGatewayRestResolver(enable_validation=True)
 app.enable_swagger(path='/swagger', title='AWS Lambda Handler Cookbook - Orders Service')
+app.configure_openapi_merge(
+    path='{{cookiecutter.service_name}}/handlers/',
+    pattern='*/.py',
+    resolver_name='app',
+    title='AWS Lambda Handler Cookbook - Orders Service',
+)
 
 
 @app.exception_handler(DynamicConfigurationException)
@@ -26,3 +32,9 @@ def handle_internal_server_error(ex: InternalServerException):  # receives excep
     return Response(
         status_code=HTTPStatus.INTERNAL_SERVER_ERROR, content_type=content_types.APPLICATION_JSON, body=InternalServerErrorOutput().model_dump()
     )
+
+
+@app.exception_handler(OrderNotFoundException)
+def handle_order_not_found_error(ex: OrderNotFoundException):  # receives exception raised
+    logger.exception('order was not found')
+    return Response(status_code=HTTPStatus.NOT_FOUND, content_type=content_types.APPLICATION_JSON, body=OrderNotFoundOutput().model_dump())

@@ -40,7 +40,7 @@ def test_handler_invalid_env_var_value():
 
 
 @mock.patch.dict(
-    os.environ, {POWERTOOLS_SERVICE_NAME: SERVICE_NAME, POWER_TOOLS_LOG_LEVEL: 'DEBUG', 'REST_API': 'https://ranthebuilder.cloud/api'}
+    os.environ, {POWERTOOLS_SERVICE_NAME: SERVICE_NAME, POWER_TOOLS_LOG_LEVEL: 'DEBUG', 'REST_API': 'https://www.ranthebuilder.cloud/api'}
 )
 def test_handler_schema_ok():
     # Given: A handler that requires certain environment variables with valid values
@@ -52,7 +52,7 @@ def test_handler_schema_ok():
         # Then: Retrieved variables should match expected values
         assert env_vars.POWERTOOLS_SERVICE_NAME == SERVICE_NAME
         assert env_vars.LOG_LEVEL == 'DEBUG'
-        assert str(env_vars.REST_API) == 'https://ranthebuilder.cloud/api'
+        assert str(env_vars.REST_API) == 'https://www.ranthebuilder.cloud/api'
         return {}
 
     # No exception should be raised
