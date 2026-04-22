@@ -2,7 +2,7 @@ import json
 from http import HTTPStatus
 
 from {{cookiecutter.service_name}}.dal.dynamo_dal_handler import DynamoDalHandler
-from tests.integration.conftest import create_order_in_db, get_order_from_db
+from tests.conftest import create_order_in_db, get_order_from_db
 from tests.utils import generate_api_gw_event_with_path_params, generate_context, generate_random_string
 
 

@@ -5,7 +5,7 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.metrics import MetricUnit
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from {{cookiecutter.service_name}}.handlers.models.env_vars import GetDeleteHandlerEnvVars
+from {{cookiecutter.service_name}}.handlers.models.env_vars import DeleteHandlerEnvVars
 from {{cookiecutter.service_name}}.handlers.utils.observability import logger, metrics, tracer
 from {{cookiecutter.service_name}}.handlers.utils.rest_api_resolver import ORDERS_PATH, app
 from {{cookiecutter.service_name}}.logic.delete_order import delete_order
@@ -34,7 +34,7 @@ from {{cookiecutter.service_name}}.models.output import DeleteOrderOutput, Inter
     tags=['CRUD'],
 )
 def handle_delete_order(order_id: str) -> DeleteOrderOutput:
-    env_vars: GetDeleteHandlerEnvVars = get_environment_variables(model=GetDeleteHandlerEnvVars)
+    env_vars: DeleteHandlerEnvVars = get_environment_variables(model=DeleteHandlerEnvVars)
     logger.debug('environment variables', env_vars=env_vars.model_dump())
     logger.append_keys(order_id=order_id)
     logger.info('got delete order request')
@@ -49,7 +49,7 @@ def handle_delete_order(order_id: str) -> DeleteOrderOutput:
     return response
 
 
-@init_environment_variables(model=GetDeleteHandlerEnvVars)
+@init_environment_variables(model=DeleteHandlerEnvVars)
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)
 @metrics.log_metrics
 @tracer.capture_lambda_handler(capture_response=False)
