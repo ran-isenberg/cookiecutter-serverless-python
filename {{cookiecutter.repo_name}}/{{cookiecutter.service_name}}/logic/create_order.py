@@ -8,7 +8,7 @@ from {{cookiecutter.service_name}}.handlers.models.dynamic_configuration import 
 from {{cookiecutter.service_name}}.handlers.utils.dynamic_configuration import get_configuration_store
 from {{cookiecutter.service_name}}.handlers.utils.observability import logger, tracer
 from {{cookiecutter.service_name}}.logic.utils.idempotency import IDEMPOTENCY_CONFIG, IDEMPOTENCY_LAYER
-from {{cookiecutter.service_name}}.models.input import CreateOrderRequest
+from {{cookiecutter.service_name}}.models.input import OwnedCreateOrderRequest
 from {{cookiecutter.service_name}}.models.order import Order
 from {{cookiecutter.service_name}}.models.output import CreateOrderOutput
 
@@ -20,7 +20,7 @@ from {{cookiecutter.service_name}}.models.output import CreateOrderOutput
     output_serializer=PydanticSerializer,
 )
 @tracer.capture_method(capture_response=False)
-def create_order(order_request: CreateOrderRequest, table_name: str, context: LambdaContext) -> CreateOrderOutput:
+def create_order(order_request: OwnedCreateOrderRequest, table_name: str, context: LambdaContext) -> CreateOrderOutput:
     IDEMPOTENCY_CONFIG.register_lambda_context(context)  # see Lambda timeouts section
 
     logger.info('starting to handle create request', order_item_count=order_request.order_item_count, customer_name=order_request.customer_name)
@@ -51,7 +51,7 @@ def create_order(order_request: CreateOrderRequest, table_name: str, context: La
         apply_premium_user_discount()
 
     dal_handler: DalHandler = get_dal_handler(table_name)
-    order: Order = dal_handler.create_order_in_db(order_request.customer_name, order_request.order_item_count)
+    order: Order = dal_handler.create_order_in_db(order_request.owner_id, order_request.customer_name, order_request.order_item_count)
     # convert from order object to output, they won't always be the same
     return CreateOrderOutput(name=order.name, item_count=order.item_count, id=order.id)
 

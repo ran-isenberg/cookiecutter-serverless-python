@@ -14,29 +14,10 @@ Example:
 """
 
 import argparse
-import importlib
 import json
 import os
-import shutil
-import sys
-from pathlib import Path
 
-import aws_lambda_powertools.event_handler.openapi as _openapi_pkg
-
-# Patch the installed merge.py with our version that supports the shared-resolver pattern
-# (project_root param and dependent file discovery). The current Powertools release (3.24+)
-# removed this support. This works in both local venvs and CI (GitHub Actions) since
-# we resolve the target path dynamically from the installed package location.
-# workaround until https://github.com/aws-powertools/powertools-lambda-python/pull/7939 merged
-_MERGE_SRC = Path(__file__).parent / 'merge.py'
-_MERGE_DST = Path(_openapi_pkg.__file__).parent / 'merge.py'
-shutil.copy2(_MERGE_SRC, _MERGE_DST)
-
-# Force Python to reload the patched module
-sys.modules.pop('aws_lambda_powertools.event_handler.openapi.merge', None)
-importlib.reload(_openapi_pkg)
-
-from aws_lambda_powertools.event_handler.openapi import OpenAPIMerge  # noqa: E402
+from aws_lambda_powertools.event_handler.openapi import OpenAPIMerge
 
 # Dummy environment variables required for handler module loading.
 # When merge.py imports handler files to discover routes, decorators like
@@ -54,6 +35,8 @@ _DUMMY_ENV_VARS = {
     'REST_API': 'https://dummy.execute-api.us-east-1.amazonaws.com',
     'ROLE_ARN': 'arn:aws:iam::123456789012:role/dummy',
     'TABLE_NAME': 'dummy',
+    'COGNITO_USER_POOL_ID': 'us-east-1_dummy',
+    'COGNITO_CLIENT_ID': 'dummy',
 }
 
 
@@ -79,7 +62,15 @@ def write_swagger(out_destination: str, out_filename: str) -> None:
 
     file_path = os.path.join(out_destination, out_filename)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    merge = OpenAPIMerge(title='AWS Lambda Handler Cookbook - Orders Service', version='1.0.0', on_conflict='warn')
+    # imported here, after the dummy env vars are set, since the handler modules read env vars at import time
+    from {{cookiecutter.service_name}}.handlers.utils.rest_api_resolver import BEARER_SECURITY_SCHEMES
+
+    merge = OpenAPIMerge(
+        title='AWS Lambda Handler Cookbook - Orders Service',
+        version='1.0.0',
+        on_conflict='warn',
+        security_schemes=BEARER_SECURITY_SCHEMES,
+    )
     files = merge.discover(
         path='{{cookiecutter.service_name}}/handlers',
         pattern='**/*.py',

@@ -63,6 +63,7 @@ jobs:
         run: |
           cd my_serverless_service
           make dev
+          make emulator-install # Linux: installs the AWS Emulator Debian package, required by the integration tests in 'make pr'
           make pr
           make coverage
           make destroy
