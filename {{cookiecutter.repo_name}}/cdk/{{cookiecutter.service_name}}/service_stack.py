@@ -1,8 +1,9 @@
-from aws_cdk import Aspects, Stack, Tags
-from cdk_nag import AwsSolutionsChecks, NagSuppressions
+from aws_cdk import Stack, Tags, Validations
+from cdk_nag import AwsSolutionsChecks
 from constructs import Construct
 
 from cdk.{{cookiecutter.service_name}}.api_construct import ApiConstruct
+from cdk.{{cookiecutter.service_name}}.auth_construct import AuthConstruct
 from cdk.{{cookiecutter.service_name}}.configuration.configuration_construct import ConfigurationStore
 from cdk.{{cookiecutter.service_name}}.constants import CONFIGURATION_NAME, ENVIRONMENT, OWNER_TAG, SERVICE_NAME, SERVICE_NAME_TAG
 from cdk.{{cookiecutter.service_name}}.utils import get_construct_name, get_username
@@ -23,11 +24,15 @@ class ServiceStack(Stack):
             SERVICE_NAME,
             CONFIGURATION_NAME,
         )
+        self.auth = AuthConstruct(self, get_construct_name(stack_prefix=id, construct_name='Auth'))
         self.api = ApiConstruct(
             self,
             get_construct_name(stack_prefix=id, construct_name='Crud'),
             self.dynamic_configuration.app_name,
             is_production_env=is_production_env,
+            user_pool_id=self.auth.user_pool.user_pool_id,
+            user_pool_client_id=self.auth.user_pool_client.user_pool_client_id,
+            user_pool_jwks=self.auth.jwks,
         )
 
         # add security check
@@ -39,19 +44,31 @@ class ServiceStack(Stack):
         Tags.of(self).add(OWNER_TAG, get_username())
 
     def _add_security_tests(self) -> None:
-        Aspects.of(self).add(AwsSolutionsChecks(verbose=True))
-        # Suppress a specific rule for this resource
-        NagSuppressions.add_stack_suppressions(
-            self,
-            [
-                {'id': 'AwsSolutions-IAM4', 'reason': 'policy for cloudwatch logs.'},
-                {'id': 'AwsSolutions-IAM5', 'reason': 'policy for cloudwatch logs.'},
-                {'id': 'AwsSolutions-APIG2', 'reason': 'lambda does input validation'},
-                {'id': 'AwsSolutions-APIG1', 'reason': 'not mandatory in a sample blueprint'},
-                {'id': 'AwsSolutions-APIG3', 'reason': 'not mandatory in a sample blueprint'},
-                {'id': 'AwsSolutions-APIG6', 'reason': 'not mandatory in a sample blueprint'},
-                {'id': 'AwsSolutions-APIG4', 'reason': 'authorization not mandatory in a sample blueprint'},
-                {'id': 'AwsSolutions-COG4', 'reason': 'not using cognito'},
-                {'id': 'AwsSolutions-L1', 'reason': 'False positive'},
-            ],
+        Validations.of(self).add_plugins(AwsSolutionsChecks(self, verbose=True))
+        # Acknowledge (suppress) specific cdk-nag findings for the whole stack.
+        self._acknowledge_nag_findings(
+            {
+                'AwsSolutions-IAM4[Policy::arn:<AWS::Partition>:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole]': 'policy for cloudwatch logs.',
+                'AwsSolutions-IAM4[Policy::arn:<AWS::Partition>:iam::aws:policy/AWSLambdaManagedEC2ResourceOperator]': 'managed policy required for the Lambda managed EC2 capacity provider.',
+                'AwsSolutions-IAM5[Resource::*]': 'policy for cloudwatch logs.',
+                'AwsSolutions-APIG2': 'lambda does input validation',
+                'AwsSolutions-APIG1': 'not mandatory in a sample blueprint',
+                'AwsSolutions-APIG3': 'not mandatory in a sample blueprint',
+                'AwsSolutions-APIG6': 'not mandatory in a sample blueprint',
+                'AwsSolutions-APIG4': 'authorization is enforced inside the Lambda functions by the Powertools JWTVerifier (Cognito access tokens and scopes)',
+                'AwsSolutions-COG2': 'MFA is not required: the pool is admin-provisioned, has no self sign up and is a sample blueprint',
+                'AwsSolutions-COG3': 'advanced security mode is a paid add-on and is not mandatory in a sample blueprint',
+                'AwsSolutions-COG8': 'the Essentials feature plan is enough (it supports the pre token generation V2 trigger); the Plus plan is a paid tier not needed in a sample blueprint',
+                'AwsSolutions-COG4': 'no API Gateway Cognito authorizer: tokens are verified in the Lambda functions by the Powertools JWTVerifier',
+                'AwsSolutions-L1': 'False positive',
+            }
         )
+
+    def _acknowledge_nag_findings(self, findings: dict[str, str]) -> None:
+        # cdk-nag v3 delegates suppression to CDK's native Validations.acknowledge(), but that API
+        # rejects any rule id containing more than one '::' delimiter. Granular IAM findings carry
+        # such ids (e.g. 'AwsSolutions-IAM4[Policy::arn:<AWS::Partition>:iam::aws:policy/...]'), so we
+        # record the acknowledgment metadata directly under the key cdk-nag reads. This matches its
+        # internal isAcknowledged() lookup exactly and works for both simple and granular finding ids.
+        for finding_id, reason in findings.items():
+            self.node.add_metadata(Validations.ACKNOWLEDGED_RULES_METADATA_KEY, {finding_id: reason})
